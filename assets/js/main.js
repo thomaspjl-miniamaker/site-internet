@@ -370,7 +370,7 @@ function renderPortfolioGallery(category=portfolioState.category,reset=false){
     : MINIATURES[category].map(file=>[category,file]);
 
   portfolioState.category=category;
-  grid.innerHTML=data.map(([group,file])=>`<figure class="gallery-item"><img loading="lazy" src="Ressources/Miniatures/${group}/${encodeURIComponent(file)}" alt="${file.split('.')[0]}"></figure>`).join('');
+  grid.innerHTML=data.map(([group,file])=>`<figure class="gallery-item"><img loading="lazy" src="/Ressources/Miniatures/${group}/${encodeURIComponent(file)}" alt="${file.split('.')[0]}"></figure>`).join('');
   if(reset&&isMobileLayout()){
     grid.scrollLeft=0;
   }
@@ -396,7 +396,7 @@ if(document.querySelector('.gallery[data-gallery="minia"]')){
 function renderInstagramGallery(reset=false){
   const grid=document.querySelector('.gallery[data-gallery="ig"]');
   if(!grid)return;
-  grid.innerHTML=AFFICHES.map(file=>`<figure class="gallery-item"><img loading="lazy" src="Ressources/Affiches Instagram/${encodeURIComponent(file)}" alt=""></figure>`).join('');
+  grid.innerHTML=AFFICHES.map(file=>`<figure class="gallery-item"><img loading="lazy" src="/Ressources/Affiches Instagram/${encodeURIComponent(file)}" alt=""></figure>`).join('');
 }
 
 if(document.querySelector('.gallery[data-gallery="ig"]')){
@@ -418,7 +418,7 @@ if(heroThumbs){
       [pool[i],pool[j]]=[pool[j],pool[i]];
     }
     const slice=pool.slice(0,perRow);
-    const html=slice.map(([group,file])=>`<img loading="lazy" src="Ressources/Miniatures/${group}/${encodeURIComponent(file)}" alt="">`).join('');
+    const html=slice.map(([group,file])=>`<img loading="lazy" src="/Ressources/Miniatures/${group}/${encodeURIComponent(file)}" alt="">`).join('');
     row.innerHTML=html+html;
   });
 }
@@ -432,7 +432,7 @@ if(preview){
   const mobileCats=desktopCats.filter((_,index)=>desktopPicks[index]!=="Hugo_ChallengeSansSucre.jpg");
   const picks=isMobileLayout()?mobilePicks:desktopPicks;
   const cats=isMobileLayout()?mobileCats:desktopCats;
-  preview.innerHTML=picks.map((file,index)=>`<figure class="gallery-item"><img loading="lazy" src="Ressources/Miniatures/${cats[index]}/${encodeURIComponent(file)}" alt=""></figure>`).join('');
+  preview.innerHTML=picks.map((file,index)=>`<figure class="gallery-item"><img loading="lazy" src="/Ressources/Miniatures/${cats[index]}/${encodeURIComponent(file)}" alt=""></figure>`).join('');
 }
 
 setupMobilePricing();
@@ -444,7 +444,7 @@ function setupMiniatureOrderForm(){
 
   const contactFields=[...form.querySelectorAll('[data-contact-method]')];
   const contactMarks=[...form.querySelectorAll('[data-contact-required-mark]')];
-  const paymentRedirect='maintenance.html';
+  const paymentRedirect='/maintenance/';
 
   const syncContactRequirement=()=>{
     const hasValue=contactFields.some(field=>field.value.trim()!=='');
