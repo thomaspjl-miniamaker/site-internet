@@ -3266,6 +3266,21 @@ body.lightbox-open {
   text-transform: uppercase;
 }
 
+.sales-results {
+  width: min(1220px, 100%);
+  margin: 0 auto;
+  padding-bottom: clamp(105px, 10vw, 155px);
+}
+
+.pixel-minia-page .sales-hero__visual > img {
+  width: min(108%, 650px);
+}
+
+.pixel-minia-page .sales-hero__visual::before,
+.pixel-minia-page .sales-hero__visual::after {
+  display: none;
+}
+
 .sales-solution,
 .sales-program,
 .sales-support,
@@ -4056,6 +4071,15 @@ body.lightbox-open {
 
   .sales-trust__hint {
     margin-top: 20px;
+  }
+
+  .sales-results {
+    width: 100%;
+    padding-bottom: 78px;
+  }
+
+  .pixel-minia-page .sales-hero__visual > img {
+    width: min(108%, 520px);
   }
 
   .sales-solution__grid {
