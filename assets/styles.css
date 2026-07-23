@@ -4101,6 +4101,7 @@ body.lightbox-open {
 
   .sales-trust__rail {
     grid-template-columns: none;
+    grid-template-rows: repeat(2, auto);
     grid-auto-flow: column;
     grid-auto-columns: 158px;
     gap: 12px;
@@ -4175,6 +4176,10 @@ body.lightbox-open {
 
   .sales-work__item {
     scroll-snap-align: start;
+  }
+
+  .sales-work__item:nth-child(n + 9) {
+    display: none;
   }
 
   .sales-work__item:hover,
@@ -4317,6 +4322,27 @@ body.lightbox-open {
   .sales-final__note {
     font-size: 7px;
     line-height: 1.5;
+  }
+}
+
+@media (min-width: 761px) and (prefers-reduced-motion: no-preference) {
+  .scroll-reveal {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    transition:
+      opacity 650ms cubic-bezier(.22, .68, .24, 1),
+      transform 650ms cubic-bezier(.22, .68, .24, 1);
+  }
+
+  .scroll-reveal.is-reveal-pending {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+    will-change: opacity, transform;
+  }
+
+  .scroll-reveal.is-revealed {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 }
 

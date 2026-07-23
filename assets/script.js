@@ -265,3 +265,88 @@ if (portfolioGallery || homepageThumbnails.length || pageLightboxTargets.length)
     if (event.target === lightbox) closeLightbox();
   });
 }
+
+// Animations discrètes des grands blocs, réservées aux écrans d’ordinateur.
+// Le contenu reste visible par défaut : sans JavaScript, sur mobile ou avec
+// « réduire les animations », rien n’est masqué.
+const desktopRevealMedia = window.matchMedia(
+  '(min-width: 761px) and (prefers-reduced-motion: no-preference)'
+);
+const revealSelectors = [
+  '.results__inner',
+  '.about__inner',
+  '.recent__head',
+  '.recent__rail',
+  '.portfolio-filters',
+  '.social-proof__header',
+  '.portfolio-work .proof-block',
+  '.sales-pain__inner',
+  '.sales-about__inner',
+  '.sales-work',
+  '.sales-trust',
+  '.sales-results',
+  '.sales-solution > .sales-section-head',
+  '.sales-solution__grid',
+  '.sales-included__inner',
+  '.sales-program > .sales-section-head',
+  '.sales-program__list',
+  '.sales-support > .sales-section-head',
+  '.sales-support__grid',
+  '.sales-offer',
+  '.sales-faq > .sales-section-head',
+  '.sales-faq__list',
+  '.sales-final__inner',
+  '.contact-intro',
+  '.contact-form',
+  '.legal__header',
+  '.legal__document',
+  '.site-footer__inner'
+];
+const revealTargets = [...new Set(
+  revealSelectors.flatMap((selector) => [...document.querySelectorAll(selector)])
+)];
+let revealObserver = null;
+
+const showRevealTargets = () => {
+  revealObserver?.disconnect();
+  revealObserver = null;
+  revealTargets.forEach((target) => {
+    target.classList.remove('is-reveal-pending');
+    target.classList.add('is-revealed');
+  });
+};
+
+const setupDesktopReveals = () => {
+  if (!desktopRevealMedia.matches || !('IntersectionObserver' in window)) {
+    showRevealTargets();
+    return;
+  }
+
+  revealObserver?.disconnect();
+  revealTargets.forEach((target) => {
+    if (target.classList.contains('is-revealed')) return;
+    target.classList.add('scroll-reveal', 'is-reveal-pending');
+  });
+
+  revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.remove('is-reveal-pending');
+      entry.target.classList.add('is-revealed');
+      revealObserver?.unobserve(entry.target);
+    });
+  }, {
+    threshold: 0.08,
+    rootMargin: '0px 0px -10% 0px'
+  });
+
+  revealTargets.forEach((target) => {
+    if (!target.classList.contains('is-revealed')) revealObserver.observe(target);
+  });
+};
+
+setupDesktopReveals();
+desktopRevealMedia.addEventListener?.('change', () => {
+  if (desktopRevealMedia.matches) setupDesktopReveals();
+  else showRevealTargets();
+});
