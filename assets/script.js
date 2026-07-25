@@ -298,8 +298,7 @@ const revealSelectors = [
   '.sales-final__inner',
   '.contact-intro',
   '.contact-form',
-  '.legal__header',
-  '.legal__document',
+  'body:not(.cgv-page) .legal__header',
   '.site-footer__inner'
 ];
 const revealTargets = [...new Set(
