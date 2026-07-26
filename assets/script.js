@@ -72,6 +72,46 @@ const portfolioHint = document.querySelector('.portfolio-work__hint');
 
 if (portfolioGallery && window.portfolioLibrary) {
   const categoryOrder = ['Gaming', 'Sport', 'Business', 'Podcast', 'Divertissement', 'Manga'];
+  const filterSlugs = {
+    all: '',
+    Gaming: 'gaming',
+    Sport: 'sport',
+    Business: 'business',
+    Podcast: 'podcast',
+    Divertissement: 'divertissement',
+    Manga: 'manga',
+    proof: 'resultats-clients'
+  };
+  const filtersBySlug = Object.fromEntries(
+    Object.entries(filterSlugs).map(([filter, slug]) => [slug, filter])
+  );
+
+  const getFilterFromUrl = () => {
+    const slug = new URL(window.location.href).searchParams
+      .get('filtre')
+      ?.trim()
+      .toLowerCase() || '';
+
+    return filtersBySlug[slug] || 'all';
+  };
+
+  const updateFilterUrl = (filter) => {
+    const url = new URL(window.location.href);
+    const slug = filterSlugs[filter] || '';
+
+    if (slug) url.searchParams.set('filtre', slug);
+    else url.searchParams.delete('filtre');
+
+    const nextUrl = `${url.pathname}${url.search}${url.hash}`;
+    const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    if (nextUrl === currentUrl) return;
+
+    try {
+      window.history.pushState({ portfolioFilter: filter }, '', nextUrl);
+    } catch {
+      // Le portfolio reste fonctionnel si l'API History est indisponible (aperçu local file://).
+    }
+  };
 
   const makeItem = (category, file) => ({ category, file });
   const itemsByCategory = Object.fromEntries(
@@ -170,28 +210,38 @@ if (portfolioGallery && window.portfolioLibrary) {
     });
   };
 
+  const applyPortfolioFilter = (filter, { updateUrl = false, scroll = false } = {}) => {
+    const safeFilter = Object.prototype.hasOwnProperty.call(filterSlugs, filter) ? filter : 'all';
+    const showProof = safeFilter === 'proof';
+
+    portfolioFilterButtons.forEach((button) => {
+      const isSelected = (button.dataset.filter || 'all') === safeFilter;
+      button.classList.toggle('is-active', isSelected);
+      button.setAttribute('aria-pressed', String(isSelected));
+    });
+
+    portfolioGallery.hidden = showProof;
+    if (portfolioCount) portfolioCount.hidden = showProof;
+    if (portfolioHint) portfolioHint.hidden = showProof;
+    if (socialProof) socialProof.hidden = !showProof;
+
+    if (!showProof) renderPortfolio(safeFilter);
+    if (updateUrl) updateFilterUrl(safeFilter);
+    if (scroll) scrollToPortfolioStart();
+  };
+
   portfolioFilterButtons.forEach((button) => {
     button.addEventListener('click', () => {
       const filter = button.dataset.filter || 'all';
-      const showProof = filter === 'proof';
-
-      portfolioFilterButtons.forEach((candidate) => {
-        const isSelected = candidate === button;
-        candidate.classList.toggle('is-active', isSelected);
-        candidate.setAttribute('aria-pressed', String(isSelected));
-      });
-
-      portfolioGallery.hidden = showProof;
-      if (portfolioCount) portfolioCount.hidden = showProof;
-      if (portfolioHint) portfolioHint.hidden = showProof;
-      if (socialProof) socialProof.hidden = !showProof;
-
-      if (!showProof) renderPortfolio(filter);
-      scrollToPortfolioStart();
+      applyPortfolioFilter(filter, { updateUrl: true, scroll: true });
     });
   });
 
-  renderPortfolio();
+  window.addEventListener('popstate', () => {
+    applyPortfolioFilter(getFilterFromUrl());
+  });
+
+  applyPortfolioFilter(getFilterFromUrl());
 }
 
 const homepageThumbnails = document.querySelectorAll('.recent__item');
