@@ -327,6 +327,7 @@ const revealSelectors = [
   '.about__inner',
   '.recent__head',
   '.recent__rail',
+  '.discord-community__inner',
   '.portfolio-filters',
   '.social-proof__header',
   '.portfolio-work .proof-block',
